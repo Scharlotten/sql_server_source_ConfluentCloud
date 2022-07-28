@@ -1,12 +1,13 @@
 # Considerations
-If you would like to use the docker-compose file as it is - remove the "_template" keyword from the end of `sql-server_conn_template.properties`
+If you would like to use the docker-compose file as it is within the sql_server folder
+- remove the "_template" keyword from the end of `sql-server_conn_template.properties`
 making it --> `sql-server_conn.properties` and apply the same to the worker file as well. `worker_template.properties` --> `worker.properties`
 
-This is needed as the docker-compose file points to the files containing the API keys and secrets and only the template is shared. 
+This is needed as the docker-compose file points to the files containing the API keys and secrets however that would be bad practice to upload that to git... 
 
-Disclaimer - This was one of the most annoying connectors I had to set up so far
 ## Topics
-If you are connecting to Confluent Cloud, create a topic called `server1` a topic called `server1.dbo.customers` and a last one `schem-changes.inventory`
+If you are connecting to Confluent Cloud, create a topic called `server1` a topic called `server1.dbo.customers`
+and a last one `schema-changes.inventory`
 All three topics are needed so the connector can start recording the messages. 
 
 ## Docker-compose 
@@ -16,3 +17,6 @@ not finding the database
 * In case you are interested once sqlserver starts, you can see a bunch of commands that are run - 
 It is a single SQL query that is being executed once the DB is up - what's interesting about this is that it does not only 
 create a table but it also enables change data capture on the whole DB then on the table just in case (most likely it will say in the logs it can't enable it again as it is already enabled)
+
+
+Disclaimer - This was one of the most annoying connectors I had to set up so far
