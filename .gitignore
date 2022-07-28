@@ -1,0 +1,3 @@
+sql_server/sql-server_conn.properties
+sql_server/worker.properties
+.env
