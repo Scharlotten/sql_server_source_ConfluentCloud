@@ -1,4 +1,9 @@
 # Considerations
+If you would like to use the docker-compose file as it is - remove the "_template" keyword from the end of `sql-server_conn_template.properties`
+making it --> `sql-server_conn.properties` and apply the same to the worker file as well. `worker_template.properties` --> `worker.properties`
+
+This is needed as the docker-compose file points to the files containing the API keys and secrets and only the template is shared. 
+
 Disclaimer - This was one of the most annoying connectors I had to set up so far
 ## Topics
 If you are connecting to Confluent Cloud, create a topic called `server1` a topic called `server1.dbo.customers` and a last one `schem-changes.inventory`
