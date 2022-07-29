@@ -6,17 +6,26 @@ making it --> `sql-server_conn.properties` and apply the same to the worker file
 This is needed as the docker-compose file points to the files containing the API keys and secrets however that would be bad practice to upload that to git... 
 
 ## Topics
-If you are connecting to Confluent Cloud, create a topic called `server1` a topic called `server1.dbo.customers`
-and a last one `schema-changes.inventory`
+If you are connecting to Confluent Cloud, create a topic called 
+* `server1` - If you want to change this update the database server name in `sql_server_conn_template.properties` this topic records
+all the changes that happen in the DB
+* `server1.dbo.customers` - this topic will contain the payload - what is actually inserted into the db
+* `schema-changes.inventory` - this records DDL changes \n
+
 All three topics are needed so the connector can start recording the messages. 
 
 ## Docker-compose 
-* The connect image is actively waithing for sqlserver to come online by a healthcheck. If you remove this, connect will start too early and will complain about
+* The connect image is actively waithing for sqlserver to come online by a **healthcheck**. If you remove this, connect will start too early and will complain about
 not finding the database
-* Look at the sql-server_conn.properties file and configure your API key and secrets since there is database.history tracking topic you need to authenticate in the connector config file not only in the worker file
-* In case you are interested once sqlserver starts, you can see a bunch of commands that are run - 
-It is a single SQL query that is being executed once the DB is up - what's interesting about this is that it does not only 
-create a table but it also enables change data capture on the whole DB then on the table just in case (most likely it will say in the logs it can't enable it again as it is already enabled)
+* Add a `.env` file to your project and set your API_KEY and API_SECRET - docker should be able to pick these up 
+automatically instead of replacing them in the main `docker-compose.yml` file
+* Make sure you add your API key and secret to
+     * `sql-server_conn.properties` file and configure your API key and secrets since there is database.history tracking
+        topic you need to authenticate in the connector config file not only in the worker file
+     * `worker.properties` file - this is needed because you are authenticating against Confluent Cloud, all 
+        producers and consumers need to be configured correctly
 
-
-Disclaimer - This was one of the most annoying connectors I had to set up so far
+_In case you are interested once sqlserver starts, a few commands are run - 
+`001_tbl_creation.sql` is responsible for creating **testDB**, **customers** and **enabling change data capture on the DB**_
+ 
+Happy streaming 
